@@ -318,10 +318,12 @@ endif()
 # Set include folders
 #
 target_include_directories(mp4v2 PUBLIC
-   ${CMAKE_CURRENT_BINARY_DIR}/include
-   ${CMAKE_CURRENT_SOURCE_DIR}/include
-   ${CMAKE_CURRENT_BINARY_DIR}
-   ${CMAKE_CURRENT_SOURCE_DIR})
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+   $<INSTALL_INTERFACE:include/mp4v2>
+)
 
 #
 # Define utilities targets
@@ -379,6 +381,24 @@ else()
 endif()
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mp4v2.pc" DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+
+install(TARGETS mp4v2
+        EXPORT mp4v2-targets
+        FILE_SET HEADERS
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+
+install(EXPORT mp4v2-targets
+        FILE mp4v2-targets.cmake
+        NAMESPACE mp4v2::
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/mp4v2")
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(mp4v2-config-version.cmake COMPATIBILITY SameMajorVersion)
+
+install(FILES mp4v2-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp4v2-config-version.cmake DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/mp4v2")
 
 if(BUILD_UTILS)
     install(TARGETS mp4art
