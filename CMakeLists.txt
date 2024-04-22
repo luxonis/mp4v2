@@ -384,11 +384,15 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mp4v2.pc" DESTINATION "${CMAKE_INSTAL
 
 install(TARGETS mp4v2
         EXPORT mp4v2-targets
-        FILE_SET HEADERS
         LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
         INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+
+# Manually specify the installation of header files
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/mp4v2
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+        FILES_MATCHING PATTERN "*.h*")
 
 install(EXPORT mp4v2-targets
         FILE mp4v2-targets.cmake
